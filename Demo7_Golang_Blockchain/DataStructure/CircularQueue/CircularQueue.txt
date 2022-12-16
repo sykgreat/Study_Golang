@@ -1,0 +1,68 @@
+package CircularQueue
+
+type MyCircularQueue interface {
+	Size() int                // 返回队列的大小
+	EnQueue(data interface{}) // 入队
+	DeQueue() interface{}     // 出队
+	IsEmpty() bool            // 判断队列是否为空
+	Front() interface{}       // 返回队列的第一个元素
+	End() interface{}         // 返回队列的最后一个元素
+	Clear()                   // 清空队列
+}
+
+type CircularQueue struct {
+	data []interface{}
+	head int // 队头
+	tail int // 队尾
+}
+
+func NewCircularQueue() *CircularQueue {
+	queue := new(CircularQueue)
+	queue.data = make([]interface{}, 0)
+	queue.head = 0
+	queue.tail = 0
+	return queue
+}
+
+func (queue *CircularQueue) Size() int {
+	return (queue.tail - queue.head + len(queue.data)) % len(queue.data)
+}
+
+func (queue *CircularQueue) EnQueue(data interface{}) {
+	queue.data = append(queue.data, data)
+	queue.tail = (queue.tail + 1) % len(queue.data)
+}
+
+func (queue *CircularQueue) DeQueue() interface{} {
+	if queue.head == queue.tail {
+		panic("queue is empty")
+	}
+	data := queue.data[queue.head]
+	queue.data[queue.head] = nil
+	queue.head = (queue.head + 1) % len(queue.data)
+	return data
+}
+
+func (queue *CircularQueue) IsEmpty() bool {
+	return queue.head == queue.tail
+}
+
+func (queue *CircularQueue) Front() interface{} {
+	if queue.IsEmpty() {
+		panic("queue is empty")
+	}
+	return queue.data[queue.head]
+}
+
+func (queue *CircularQueue) End() interface{} {
+	if queue.IsEmpty() {
+		panic("queue is empty")
+	}
+	return queue.data[(queue.tail-1+len(queue.data))%len(queue.data)]
+}
+
+func (queue *CircularQueue) Clear() {
+	queue.data = []interface{}{}
+	queue.head = 0
+	queue.tail = 0
+}

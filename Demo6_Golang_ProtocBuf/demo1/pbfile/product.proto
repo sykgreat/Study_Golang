@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package service;
+
+option go_package="../service";
+
+message ProductRequest {
+  int32 product_id = 1;
+}
+
+message ProductResponse {
+  int32 product_stock = 1;
+}
+
+service ProductService {
+  rpc GetProductStock(ProductRequest) returns (ProductResponse) {}
+}

@@ -1,0 +1,2 @@
+查看逃逸 指令
+go build -gcflags="-m -m -l" main.go
