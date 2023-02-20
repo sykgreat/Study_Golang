@@ -150,5 +150,4 @@ func TF[T comparable](a, b T) {
 	} else {
 		fmt.Println("false")
 	}
-
 }

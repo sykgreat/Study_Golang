@@ -4,8 +4,8 @@ import "fmt"
 
 // BoardingProcessor 登机过程中，各节点统一处理接口
 type BoardingProcessor interface {
-	SetNextProcessor(processor BoardingProcessor)
-	ProcessFor(passenger *Passenger)
+	SetNextProcessor(processor BoardingProcessor) // 设置下一个处理器
+	ProcessFor(passenger *Passenger)              // 处理旅客登机
 }
 
 // Passenger 旅客
