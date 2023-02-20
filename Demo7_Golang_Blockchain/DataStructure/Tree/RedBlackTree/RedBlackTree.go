@@ -17,6 +17,7 @@ type MyNode[T any] interface {
 	printPreOrder(resp *[][]any)           // 前序遍历
 	printInOrder(resp *[][]any)            // 中序遍历
 	printPostOrder(resp *[][]any)          // 后序遍历
+	string() string                        // 打印节点
 }
 
 // Node 节点
@@ -161,13 +162,23 @@ func (n *Node[T]) printPostOrder(resp *[][]any) {
 	*resp = append(*resp, []any{n.Key, n.Value, n.color})
 }
 
+// 打印节点
+func (n *Node[T]) string() string {
+	return fmt.Sprintf("key:%v,value:%v,color:%v", n.Key, n.Value, n.color)
+}
+
 type MyRedBlackTree[T any] interface {
-	GetTreeSize() int     // 获取树的节点数量
-	Add(key int, value T) // 添加节点
-	PrintPreOrder()       // 前序遍历
-	PrintInOrder()        // 中序遍历
-	PrintPostOrder()      // 后序遍历
-	PrintTree()           // 打印树
+	IsEmpty() bool                      // 判断树是否为空
+	GetTreeSize() int                   // 获取树的节点数量
+	Add(key int, value T)               // 添加节点
+	GetMin() *Node[T]                   // 获取最小值
+	GetMax() *Node[T]                   // 获取最大值
+	SearchValueForKey(key int) *Node[T] // 根据key查找value
+	PrintPreOrder()                     // 前序遍历
+	PrintInOrder()                      // 中序遍历
+	PrintPostOrder()                    // 后序遍历
+	Clean()                             // 清空树
+	String() string                     // 打印树
 }
 
 // RedBlackTree 红黑树
@@ -184,6 +195,11 @@ func NewRedBlackTree[T any]() *RedBlackTree[T] {
 	}
 }
 
+// IsEmpty 判断树是否为空
+func (rbt *RedBlackTree[T]) IsEmpty() bool {
+	return rbt.size == 0
+}
+
 // GetTreeSize 获取树的节点数量
 func (rbt *RedBlackTree[T]) GetTreeSize() int {
 	return rbt.size
@@ -195,6 +211,39 @@ func (rbt *RedBlackTree[T]) Add(key int, value T) {
 	rbt.size += isAdd
 	rbt.root = nd
 	rbt.root.color = BLACK //根节点为黑色节点
+}
+
+// GetMin 获取最小值
+func (rbt *RedBlackTree[T]) GetMin() (min *Node[T]) {
+	min = rbt.root
+	for min.left != nil {
+		min = min.left
+	}
+	return min
+}
+
+// GetMax 获取最大值
+func (rbt *RedBlackTree[T]) GetMax() (max *Node[T]) {
+	max = rbt.root
+	for max.right != nil {
+		max = max.right
+	}
+	return max
+}
+
+// SearchValueForKey 根据key查找value
+func (rbt *RedBlackTree[T]) SearchValueForKey(key int) (node *Node[T]) {
+	node = rbt.root
+	for node != nil {
+		if key < node.Key {
+			node = node.left
+		} else if key > node.Key {
+			node = node.right
+		} else {
+			break
+		}
+	}
+	return node
 }
 
 // PrintPreOrder 前序遍历
@@ -218,7 +267,45 @@ func (rbt *RedBlackTree[T]) PrintPostOrder() {
 	fmt.Println(resp)
 }
 
-// PrintTree 打印树
-func (rbt *RedBlackTree[T]) PrintTree() {
+// Clean 清空树
+func (rbt *RedBlackTree[T]) Clean() {
+	rbt.root = nil
+	rbt.size = 0
+}
 
+// String 打印树
+func (rbt *RedBlackTree[T]) String() string {
+	str := "RedBlackTree\n"
+	if !rbt.IsEmpty() {
+		output(rbt.root, "", true, &str)
+	}
+	return str
+}
+
+func output[T any](node *Node[T], prefix string, isTail bool, str *string) {
+	if node.right != nil {
+		newPrefix := prefix
+		if isTail {
+			newPrefix += "│   "
+		} else {
+			newPrefix += "    "
+		}
+		output(node.right, newPrefix, false, str)
+	}
+	*str += prefix
+	if isTail {
+		*str += "└── "
+	} else {
+		*str += "┌── "
+	}
+	*str += node.string() + "\n"
+	if node.left != nil {
+		newPrefix := prefix
+		if isTail {
+			newPrefix += "    "
+		} else {
+			newPrefix += "│   "
+		}
+		output(node.left, newPrefix, true, str)
+	}
 }
