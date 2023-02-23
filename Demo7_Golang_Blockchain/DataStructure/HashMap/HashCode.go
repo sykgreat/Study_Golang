@@ -1,21 +1,31 @@
 package HashMap
 
 import (
+	"hash/fnv"
 	"math/rand"
 	"unsafe"
 )
 
+func Strhash(s string) uint32 {
+	h := fnv.New32a()
+	_, err := h.Write([]byte(s))
+	if err != nil {
+		return 0
+	}
+	return h.Sum32()
+}
+
 // used in hash{32,64}.go to seed the hash function
-var hashKey [4]uintptr
+var hashkey [4]uintptr
 
 func init() {
 	for i := 0; i < 4; i++ {
-		hashKey[i] = uintptr(rand.Int63())
+		hashkey[i] = uintptr(rand.Int63())
 	}
-	hashKey[0] |= 1 // make sure these numbers are odd
-	hashKey[1] |= 1
-	hashKey[2] |= 1
-	hashKey[3] |= 1
+	hashkey[0] |= 1 // make sure these numbers are odd
+	hashkey[1] |= 1
+	hashkey[2] |= 1
+	hashkey[3] |= 1
 }
 func add(p unsafe.Pointer, x uintptr) unsafe.Pointer {
 	return unsafe.Pointer(uintptr(p) + x)
@@ -45,7 +55,7 @@ func readUnaligned64(p unsafe.Pointer) uint64 {
 	return uint64(q[0]) | uint64(q[1])<<8 | uint64(q[2])<<16 | uint64(q[3])<<24 | uint64(q[4])<<32 | uint64(q[5])<<40 | uint64(q[6])<<48 | uint64(q[7])<<56
 }
 
-// Note: These routines perform the read with an native endianness.
+// Note: These routines perform the read with a native endianness.
 func readUnaligned32(p unsafe.Pointer) uint32 {
 	q := (*[4]byte)(p)
 	if BigEndian {
@@ -54,8 +64,8 @@ func readUnaligned32(p unsafe.Pointer) uint32 {
 	return uint32(q[0]) | uint32(q[1])<<8 | uint32(q[2])<<16 | uint32(q[3])<<24
 }
 
-func memhash(p unsafe.Pointer, seed, s uintptr) uintptr {
-	h := uint64(seed + s*hashKey[0])
+func Memhash(p unsafe.Pointer, seed, s uintptr) uintptr {
+	h := uint64(seed + s*hashkey[0])
 tail:
 	switch {
 	case s == 0:
@@ -84,9 +94,9 @@ tail:
 		h = rotl_31(h*m1) * m2
 	default:
 		v1 := h
-		v2 := uint64(seed * hashKey[1])
-		v3 := uint64(seed * hashKey[2])
-		v4 := uint64(seed * hashKey[3])
+		v2 := uint64(seed * hashkey[1])
+		v3 := uint64(seed * hashkey[2])
+		v4 := uint64(seed * hashkey[3])
 		for s >= 32 {
 			v1 ^= readUnaligned64(p)
 			v1 = rotl_31(v1*m1) * m2

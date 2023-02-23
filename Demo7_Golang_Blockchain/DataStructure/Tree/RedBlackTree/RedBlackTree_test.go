@@ -2,55 +2,57 @@ package RedBlackTree
 
 import "testing"
 
-var tree = NewRedBlackTree[int]()
+var tree = NewRedBlackTree[int, int]()
 
 func init() {
-	tree.Add(1, 1)
-	tree.Add(2, 2)
-	tree.Add(3, 3)
-	tree.Add(4, 4)
+	tree.Insert(1, 1)
+	tree.Insert(2, 2)
+	tree.Insert(3, 3)
+	tree.Insert(4, 4)
+	tree.Insert(5, 5)
+	tree.Insert(6, 6)
+	tree.Insert(7, 7)
+	tree.Insert(8, 8)
+	tree.Insert(9, 9)
+	tree.Insert(10, 10)
+	tree.Insert(11, 11)
+	tree.Insert(12, 12)
+	tree.Insert(13, 13)
+	tree.Insert(14, 14)
+	tree.Insert(15, 15)
+	tree.Insert(16, 16)
+	tree.Insert(17, 17)
+	tree.Insert(18, 18)
+	tree.Insert(19, 19)
+	tree.Insert(20, 20)
 }
 
 func TestRedBlackTree_IsEmpty(t *testing.T) {
-	isEmpty := tree.IsEmpty()
-	t.Log(isEmpty)
+	t.Log(tree.IsEmpty())
 }
 
-func TestRedBlackTree_Add(t *testing.T) {
-	tree.Add(5, 5)
+func TestRedBlackTree_GetSize(t *testing.T) {
+	t.Log(tree.GetSize())
 }
 
-func TestRedBlackTree_GetMin(t *testing.T) {
-	min := tree.GetMin()
-	t.Log(min)
+func TestRedBlackTree_Insert(t *testing.T) {
+	tree.Insert(5, 5)
 }
 
-func TestRedBlackTree_GetMax(t *testing.T) {
-	max := tree.GetMax()
-	t.Log(max)
+func TestRedBlackTree_Search(t *testing.T) {
+	t.Log(tree.Search(12))
 }
 
-func TestRedBlackTree_SearchValueForKey(t *testing.T) {
-	node := tree.SearchValueForKey(3)
-	t.Log(node)
+func TestRedBlackTree_Remove(t *testing.T) {
+	t.Log(tree.Remove(8))
+	tree.Show()
 }
 
-func TestRedBlackTree_PrintPreOrder(t *testing.T) {
-	tree.PrintPreOrder()
+func TestRedBlackTree_GetTreeDepth(t *testing.T) {
+	t.Log(tree.GetTreeDepth())
+	tree.Show()
 }
 
-func TestRedBlackTree_PrintInOrder(t *testing.T) {
-	tree.PrintInOrder()
-}
-
-func TestRedBlackTree_PrintPostOrder(t *testing.T) {
-	tree.PrintPostOrder()
-}
-
-func TestRedBlackTree_Clean(t *testing.T) {
-	tree.Clean()
-}
-
-func TestRedBlackTree_String(t *testing.T) {
-	t.Log(tree)
+func TestRedBlackTree_InOrderPrint(t *testing.T) {
+	tree.InOrderPrint()
 }
