@@ -1,10 +1,20 @@
 package HashMap
 
 import (
+	"crypto/sha1"
+	"crypto/sha256"
+	"encoding/binary"
+	"hash"
 	"hash/fnv"
 	"math/rand"
 	"unsafe"
 )
+
+func Sha(str string) uint64 {
+	h := sha256.New()
+	h.Write([]byte(str))
+	return binary.LittleEndian.Uint64(h.Sum(nil))
+}
 
 func Strhash(s string) uint32 {
 	h := fnv.New32a()
@@ -30,7 +40,7 @@ func init() {
 func add(p unsafe.Pointer, x uintptr) unsafe.Pointer {
 	return unsafe.Pointer(uintptr(p) + x)
 }
-func rotl_31(x uint64) uint64 {
+func rotl31(x uint64) uint64 {
 	return (x << 31) | (x >> (64 - 31))
 }
 
@@ -73,25 +83,25 @@ tail:
 		h ^= uint64(*(*byte)(p))
 		h ^= uint64(*(*byte)(add(p, s>>1))) << 8
 		h ^= uint64(*(*byte)(add(p, s-1))) << 16
-		h = rotl_31(h*m1) * m2
+		h = rotl31(h*m1) * m2
 	case s <= 8:
 		h ^= uint64(readUnaligned32(p))
 		h ^= uint64(readUnaligned32(add(p, s-4))) << 32
-		h = rotl_31(h*m1) * m2
+		h = rotl31(h*m1) * m2
 	case s <= 16:
 		h ^= readUnaligned64(p)
-		h = rotl_31(h*m1) * m2
+		h = rotl31(h*m1) * m2
 		h ^= readUnaligned64(add(p, s-8))
-		h = rotl_31(h*m1) * m2
+		h = rotl31(h*m1) * m2
 	case s <= 32:
 		h ^= readUnaligned64(p)
-		h = rotl_31(h*m1) * m2
+		h = rotl31(h*m1) * m2
 		h ^= readUnaligned64(add(p, 8))
-		h = rotl_31(h*m1) * m2
+		h = rotl31(h*m1) * m2
 		h ^= readUnaligned64(add(p, s-16))
-		h = rotl_31(h*m1) * m2
+		h = rotl31(h*m1) * m2
 		h ^= readUnaligned64(add(p, s-8))
-		h = rotl_31(h*m1) * m2
+		h = rotl31(h*m1) * m2
 	default:
 		v1 := h
 		v2 := uint64(seed * hashkey[1])
@@ -99,16 +109,16 @@ tail:
 		v4 := uint64(seed * hashkey[3])
 		for s >= 32 {
 			v1 ^= readUnaligned64(p)
-			v1 = rotl_31(v1*m1) * m2
+			v1 = rotl31(v1*m1) * m2
 			p = add(p, 8)
 			v2 ^= readUnaligned64(p)
-			v2 = rotl_31(v2*m2) * m3
+			v2 = rotl31(v2*m2) * m3
 			p = add(p, 8)
 			v3 ^= readUnaligned64(p)
-			v3 = rotl_31(v3*m3) * m4
+			v3 = rotl31(v3*m3) * m4
 			p = add(p, 8)
 			v4 ^= readUnaligned64(p)
-			v4 = rotl_31(v4*m4) * m1
+			v4 = rotl31(v4*m4) * m1
 			p = add(p, 8)
 			s -= 32
 		}
@@ -120,4 +130,26 @@ tail:
 	h *= m3
 	h ^= h >> 32
 	return uintptr(h)
+}
+
+// CreateHash method
+func CreateHash(byteStr []byte) []byte {
+	var hashVal hash.Hash
+	hashVal = sha1.New()
+	hashVal.Write(byteStr)
+
+	return hashVal.Sum(nil)
+}
+
+// CreateHashMultiple Create hash for Multiple Values method
+func CreateHashMultiple(byteStr1 []byte, byteStr2 []byte) []byte {
+	return xor(CreateHash(byteStr1), CreateHash(byteStr2))
+}
+
+func xor(createHash []byte, createHash2 []byte) []byte {
+	xorbytes := make([]byte, len(createHash))
+	for i := 0; i < len(createHash); i++ {
+		xorbytes[i] = createHash[i] ^ createHash2[i]
+	}
+	return xorbytes
 }
