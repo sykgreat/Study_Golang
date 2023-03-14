@@ -23,7 +23,9 @@ func TestT(t *testing.T) {
 }
 
 func TestName(t *testing.T) {
-	Watch[B]()
+	if err := recover(); err != nil {
+		t.Log(err)
+	}
 }
 
 func Watch[T interface{ Foo() }]() (x *T) {

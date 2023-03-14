@@ -1,4 +1,4 @@
-package DeLinkList
+package DeLinkedList
 
 import "testing"
 
