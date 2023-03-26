@@ -143,3 +143,18 @@ func Test_SizeOf(t *testing.T) {
 	t.Log("uintptr size of: ", unsafe.Sizeof(preSize))
 	t.Log()
 }
+
+func Test_(t *testing.T) {
+
+}
+func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+	for l1 != nil || l2 != nil {
+
+	}
+	return nil
+}
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}

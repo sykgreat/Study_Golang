@@ -1,0 +1,72 @@
+windows下编译：
+    windows:
+        直接go build -o main.exe main.go进行编译
+    linux:
+        配置交叉编译环境：
+            SET CGO_ENABLED=0
+            SET GOOS=linux
+            SET GOARCH=amd64
+            在执行go build -o main main.go进行编译
+        修改回原来的环境：
+            SET CGO_ENABLED=1
+            SET GOOS=windows
+            SET GOARCH=amd64
+    mac:
+        配置交叉编译环境：
+            SET CGO_ENABLED=0
+            SET GOOS=darwin
+            SET GOARCH=amd64
+            在执行go build -o main main.go进行编译
+        修改回原来的环境：
+            SET CGO_ENABLED=1
+            SET GOOS=windows
+            SET GOARCH=amd64
+
+linux下编译：
+    windows:
+        配置交叉编译环境：
+            export CGO_ENABLED=0
+            export GOOS=windows
+            export GOARCH=amd64
+            在执行go build -o main.exe main.go进行编译
+        修改回原来的环境：
+            export CGO_ENABLED=1
+            export GOOS=linux
+            export GOARCH=amd64
+    linux:
+        直接go build -o main main.go进行编译
+    mac:
+        配置交叉编译环境：
+            export CGO_ENABLED=0
+            export GOOS=darwin
+            export GOARCH=amd64
+            在执行go build -o main main.go进行编译
+        修改回原来的环境：
+            export CGO_ENABLED=1
+            export GOOS=linux
+            export GOARCH=amd64
+
+mac下编译：
+    windows:
+        配置交叉编译环境：
+            export CGO_ENABLED=0
+            export GOOS=windows
+            export GOARCH=amd64
+            在执行go build -o main.exe main.go进行编译
+        修改回原来的环境：
+            export CGO_ENABLED=1
+            export GOOS=darwin
+            export GOARCH=amd64
+    linux:
+        配置交叉编译环境：
+            export CGO_ENABLED=0
+            export GOOS=linux
+            export GOARCH=amd64
+            在执行go build -o main main.go进行编译
+        修改回原来的环境：
+            export CGO_ENABLED=1
+            export GOOS=darwin
+            export GOARCH=amd64
+    mac:
+        直接go build -o main main.go进行编译
+
