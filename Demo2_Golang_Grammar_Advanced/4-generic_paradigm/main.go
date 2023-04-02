@@ -151,3 +151,8 @@ func TF[T comparable](a, b T) {
 		fmt.Println("false")
 	}
 }
+
+// MyStruct 泛型指针结构体
+type MyStruct[T interface{ *int | *float64 }] struct {
+	Name T
+}

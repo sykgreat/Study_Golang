@@ -21,23 +21,22 @@ type SuperMan struct {
 	level int
 }
 
-// 重定义父类方法
-
+// Eat 重定义父类方法
 func (s *SuperMan) Eat() {
 	fmt.Println("SuperMan.Sleep()...")
 }
 
-func (h *SuperMan) Sleep() {
+func (s *SuperMan) Sleep() {
 	fmt.Println("SuperMan.Sleep()...")
 }
 
-// 定义子类的新方法
-func (h *SuperMan) Fly() {
+// Fly 定义子类的新方法
+func (s *SuperMan) Fly() {
 	fmt.Println("SuperMan.Fly()...")
 }
 
-func (h *SuperMan) Print() {
-	fmt.Println(h)
+func (s *SuperMan) Print() {
+	fmt.Println(s)
 }
 
 func main() {

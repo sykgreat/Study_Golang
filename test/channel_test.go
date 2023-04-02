@@ -157,42 +157,45 @@ func Test_test(t *testing.T) {
 	fishCh := make(chan struct{}, 1)
 	var counter uint64
 	wg.Add(3)
-	go func(catCh, dogCh chan struct{}, counter uint64) {
+	go func(wg *sync.WaitGroup, catCh, dogCh chan struct{}, counter *uint64) {
 		for {
-			if counter == 100 {
+			<-catCh
+			if *counter == 100 {
 				wg.Done()
+				dogCh <- struct{}{}
 				return
 			}
-			<-catCh
-			fmt.Println("cat")
-			atomic.AddUint64(&counter, 1)
+
+			fmt.Println("cat   ", *counter)
 			dogCh <- struct{}{}
 		}
-	}(catCh, dogCh, counter)
-	go func(dogCh, fishCh chan struct{}, counter uint64) {
+	}(&wg, catCh, dogCh, &counter)
+	go func(wg *sync.WaitGroup, dogCh, fishCh chan struct{}, counter *uint64) {
 		for {
-			if counter == 100 {
+			<-dogCh
+			if *counter == 100 {
 				wg.Done()
+				fishCh <- struct{}{}
 				return
 			}
-			<-dogCh
-			fmt.Println("dog")
-			atomic.AddUint64(&counter, 1)
+
+			fmt.Println("dog   ", *counter)
 			fishCh <- struct{}{}
 		}
-	}(dogCh, fishCh, counter)
-	go func(fishCh, catCh chan struct{}, counter uint64) {
+	}(&wg, dogCh, fishCh, &counter)
+	go func(wg *sync.WaitGroup, fishCh, catCh chan struct{}, counter *uint64) {
 		for {
-			if counter == 100 {
+			<-fishCh
+			if *counter == 100 {
 				wg.Done()
 				return
 			}
-			<-fishCh
-			fmt.Println("fish")
-			atomic.AddUint64(&counter, 1)
+
+			fmt.Println("fish   ", *counter)
+			atomic.AddUint64(counter, 1)
 			catCh <- struct{}{}
 		}
-	}(fishCh, catCh, counter)
+	}(&wg, fishCh, catCh, &counter)
 	catCh <- struct{}{}
 	wg.Wait()
 }

@@ -7,7 +7,7 @@ type Hero struct {
 	Wife string
 }
 
-func (hero *Hero) Shwo() {
+func (hero *Hero) Show() {
 	fmt.Printf("Hero is %v, hero's wife is %v\n", hero.Name, hero.Wife)
 }
 
@@ -29,5 +29,5 @@ func (hero *Hero) SetWife(newWife string) {
 
 func main() {
 	hero := Hero{Name: "syk", Wife: "fyy"}
-	hero.Shwo()
+	hero.Show()
 }
