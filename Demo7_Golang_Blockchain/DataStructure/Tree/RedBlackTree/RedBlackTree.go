@@ -294,46 +294,46 @@ func (rbtn *RedBlackTreeNode[K, V]) rightRotate(tree *RedBlackTree[K, V]) {
 
 // repairRedBlackTrees 修复红黑树
 func (rbtn *RedBlackTreeNode[K, V]) repairRedBlackTrees(tree *RedBlackTree[K, V]) {
-	if rbtn.parent == nil {
+	if rbtn.parent == nil { // 根节点
 		rbtn.color = BLACK
 		return
 	}
 
-	parent := rbtn.parent
-	var grandParent *RedBlackTreeNode[K, V] = nil
-	if parent != nil {
+	parent := rbtn.parent                         // 父节点
+	var grandParent *RedBlackTreeNode[K, V] = nil // 祖父节点
+	if parent != nil {                            // 父节点不为空
 		grandParent = parent.parent
 	}
 
-	if parent != nil && parent.color == RED {
+	if parent != nil && parent.color == RED { // 父节点不为空且为红色
 		var uncle *RedBlackTreeNode[K, V] = nil
-		if parent == grandParent.left {
+		if parent == grandParent.left { // 父节点为祖父节点的左子节点
 			uncle = grandParent.right
-		} else {
+		} else { // 父节点为祖父节点的右子节点
 			uncle = grandParent.left
 		}
 
-		if uncle != nil && uncle.color == RED {
+		if uncle != nil && uncle.color == RED { // 叔叔节点不为空且为红色
 			parent.color = BLACK
 			uncle.color = BLACK
 			grandParent.color = RED
 			grandParent.repairRedBlackTrees(tree)
-		} else if parent == grandParent.left {
-			if rbtn == parent.left {
+		} else if parent == grandParent.left { // 父节点为祖父节点的左子节点
+			if rbtn == parent.left { // 当前节点为父节点的左子节点
 				parent.color = BLACK
 				grandParent.color = RED
 				grandParent.rightRotate(tree)
-			} else {
+			} else { // 当前节点为父节点的右子节点
 				rbtn = parent
 				rbtn.leftRotate(tree)
 				rbtn.repairRedBlackTrees(tree)
 			}
-		} else {
-			if rbtn == parent.right {
+		} else { // 父节点为祖父节点的右子节点
+			if rbtn == parent.right { // 当前节点为父节点的右子节点
 				parent.color = BLACK
 				grandParent.color = RED
 				grandParent.leftRotate(tree)
-			} else {
+			} else { // 当前节点为父节点的左子节点
 				rbtn = parent
 				rbtn.rightRotate(tree)
 				rbtn.repairRedBlackTrees(tree)
