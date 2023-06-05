@@ -69,6 +69,8 @@ func TestContestValueCtx(t *testing.T) {
 	value2 := "value2"
 	ctx2 := context.WithValue(ctx1, "key2", value2)
 
+	fmt.Println("key1 ==>", ctx1.Value("key1"))
+	fmt.Println("key1 ==>", ctx1.Value("key2"))
 	fmt.Println("key1 ==>", ctx2.Value("key1"))
 	fmt.Println("key2 ==>", ctx2.Value("key2"))
 }

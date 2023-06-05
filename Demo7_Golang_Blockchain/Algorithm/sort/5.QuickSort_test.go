@@ -26,6 +26,12 @@ func quickSort[T constraints.Ordered](arr []T) []T {
 	return append(append(left, pivot), right...)
 }
 
+func Benchmark_QuickSort_String(b *testing.B) {
+	arr := []string{"g", "a", "b", "c", "d", "e", "f"}
+	sort := quickSort(arr)
+	b.Log(sort)
+}
+
 func Benchmark_QuickSort(b *testing.B) {
 	arr := make([]int, 0)
 	dir, err := os.ReadDir("E:\\nginx-1.23.3\\html\\video\\KiminoNawa\\image")
@@ -47,10 +53,29 @@ func Benchmark_QuickSort(b *testing.B) {
 	b.Log(sort)
 }
 
-func Benchmark_QuickSort_String(b *testing.B) {
-	arr := []string{"g", "a", "b", "c", "d", "e", "f"}
-	sort := quickSort(arr)
-	b.Log(sort)
+func Benchmark_QuickSort_Channel(b *testing.B) {
+	arr := make([]int, 0)
+	dir, err := os.ReadDir("E:\\nginx-1.23.3\\html\\video\\KiminoNawa\\image")
+	if err != nil {
+		b.Log(err)
+	}
+	for _, v := range dir {
+		if !v.IsDir() {
+			str := strings.Split(v.Name(), ".")[0]
+			parseInt, err := strconv.ParseInt(str, 10, 64)
+			if err != nil {
+				b.Log(err)
+				return
+			}
+			arr = append(arr, int(parseInt))
+		}
+	}
+	c := make(chan []int)
+	go quickSortChannel(arr, c)
+	select {
+	case sort := <-c:
+		b.Log(sort)
+	}
 }
 
 func quickSortChannel[T constraints.Ordered](arr []T, c chan []T) {
@@ -77,30 +102,5 @@ func quickSortChannel[T constraints.Ordered](arr []T, c chan []T) {
 		case right := <-c2:
 			c <- append(append(left, pivot), right...)
 		}
-	}
-}
-
-func Benchmark_QuickSort_Channel(b *testing.B) {
-	arr := make([]int, 0)
-	dir, err := os.ReadDir("E:\\nginx-1.23.3\\html\\video\\KiminoNawa\\image")
-	if err != nil {
-		b.Log(err)
-	}
-	for _, v := range dir {
-		if !v.IsDir() {
-			str := strings.Split(v.Name(), ".")[0]
-			parseInt, err := strconv.ParseInt(str, 10, 64)
-			if err != nil {
-				b.Log(err)
-				return
-			}
-			arr = append(arr, int(parseInt))
-		}
-	}
-	c := make(chan []int)
-	go quickSortChannel(arr, c)
-	select {
-	case sort := <-c:
-		b.Log(sort)
 	}
 }

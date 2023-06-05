@@ -199,3 +199,59 @@ func Test_test(t *testing.T) {
 	catCh <- struct{}{}
 	wg.Wait()
 }
+
+func Test_test1(t *testing.T) {
+	str := "hello world"
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	ch := make(chan string, len(str))
+	one := make(chan struct{}, 1)
+	two := make(chan struct{}, 1)
+
+	for _, v := range str {
+		ch <- string(v)
+	}
+
+	go func() {
+		defer wg.Done()
+		for {
+			result, ok := <-one
+			if ok {
+				str, ok := <-ch
+				if ok {
+					fmt.Println("go 1" + str)
+				} else {
+					close(two)
+					return
+				}
+				two <- result
+			} else {
+				return
+			}
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		for {
+			result, ok := <-two
+			if ok {
+				str, ok := <-ch
+				if ok {
+					fmt.Println("go 2" + str)
+				} else {
+					close(one)
+					return
+				}
+				one <- result
+			} else {
+				return
+			}
+		}
+	}()
+
+	one <- struct{}{}
+	close(ch)
+	wg.Wait()
+}

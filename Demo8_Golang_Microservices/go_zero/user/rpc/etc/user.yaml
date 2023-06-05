@@ -1,0 +1,22 @@
+Name: user.rpc
+ListenOn: 0.0.0.0:8081
+Mode: dev
+
+Etcd:
+  Hosts:
+    - 81.71.31.250:2379
+  Key: user.rpc
+
+Mysql:
+  DataSource: jdbc:mysql://81.71.31.250:3306/go-zero-test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+
+Redis:
+  Host: 81.71.31.250:6379
+  Pass: root
+  Type: node
+  Key: user.rpc
+
+Cache:
+  - Host: 81.71.31.250:6379
+    Pass: "root"
+    Type: node

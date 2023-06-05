@@ -1,23 +1,29 @@
 syntax = "proto3";
 
-package user;
+option go_package = "./pb";
 
-// protoc-gen-go 版本大于1.4.0, proto文件需要加上go_package,否则无法生成
-option go_package = "./user";
+package pb;
 
-message IdRequest {
-    string id = 1;
+message LoginReq {
+  string UserName = 1;
+  string Password = 2;
 }
 
-message UserResponse {
-    // 用户id
-    string id = 1;
-    // 用户名称
-    string name = 2;
-    // 用户性别
-    string gender = 3;
+message LoginResp {
+  int64 Id = 1;
+  string Username = 2;
 }
 
-service User {
-    rpc getUser(IdRequest) returns(UserResponse);
+message GetUserInfoReq {
+  int64 id = 1;
+}
+
+message GetUserInfoResp {
+  int64 Id = 1;
+  string Username = 2;
+}
+
+service UserService {
+  rpc GetUserInfo(GetUserInfoReq) returns (GetUserInfoResp);
+  rpc Login(LoginReq) returns (LoginResp);
 }
